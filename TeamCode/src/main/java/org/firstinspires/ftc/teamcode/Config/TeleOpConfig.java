@@ -7,15 +7,6 @@ import org.firstinspires.ftc.teamcode.helpers.Curve;
 public class TeleOpConfig {
     public static double AIM_TURN_SCALE = 0.2;
     public static double STICK_DB = 0.05;
-    public static boolean USE_SLEW = true;
-    
-    public static double Y_ACCEL = 3.0;
-    public static double Y_DECEL = 3.0;
-    public static double X_ACCEL = 3.0;
-    public static double X_DECEL = 3.0;
-    public static double RX_ACCEL = 3.0;
-    public static double RX_DECEL = 3.0;
-
     public static Curve DRIVE_CURVE = Curve.LINEAR; //linear, cubic_bezier, smoothstep, exponential, quintic, lerp, log (ALL CAPS)
     //preset specific
     public static double BEZIER_P1 = 0.5;
