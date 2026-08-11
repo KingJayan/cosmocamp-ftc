@@ -13,10 +13,10 @@ public class TeleOpMain extends OpMode {
 
     @Override
     public void init() {
-        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftBack = hardwareMap.get(DcMotorEx.class, "backLeft");
+        rightBack = hardwareMap.get(DcMotorEx.class, "backRight");
+        leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        rightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
 
         leftBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -29,9 +29,9 @@ public class TeleOpMain extends OpMode {
         rightFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         leftBack.setDirection(DcMotorEx.Direction.REVERSE);
-        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        leftFront.setDirection(DcMotorEx.Direction.FORWARD);
         rightBack.setDirection(DcMotorEx.Direction.FORWARD);
-        rightFront.setDirection(DcMotorEx.Direction.FORWARD);
+        rightFront.setDirection(DcMotorEx.Direction.REVERSE);
     }
 
     @Override
@@ -40,13 +40,13 @@ public class TeleOpMain extends OpMode {
     }
 
     private void Drive() {
-        double y = deadband(gamepad1.left_stick_y);
+        double y = -deadband(gamepad1.left_stick_y);
         double x = deadband(-gamepad1.left_stick_x) * 1.1;
         double rx = deadband(-gamepad1.right_stick_x);
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1.0);
-        leftBack.setPower((y + x + rx) / denominator);
-        leftFront.setPower((y - x + rx) / denominator);
+        leftFront.setPower((y + x + rx) / denominator);
+        leftBack.setPower((y - x + rx) / denominator);
         rightFront.setPower((y - x - rx) / denominator);
         rightBack.setPower((y + x - rx) / denominator);
     }

@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.Config;
 
-import com.acmerobotics.dashboard.config.Config;
+import com.bylazar.configurables.annotations.Configurable;
 import org.firstinspires.ftc.teamcode.helpers.Curve;
 
-@Config
+@Configurable
 public class TeleOpConfig {
     public static double AIM_TURN_SCALE = 0.2;
     public static double STICK_DB = 0.05;
