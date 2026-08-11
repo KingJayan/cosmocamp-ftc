@@ -44,18 +44,6 @@ public class TeleOpMain extends OpMode {
         double x = deadband(-gamepad1.left_stick_x) * 1.1;
         double rx = deadband(-gamepad1.right_stick_x);
 
-        /*
-        y = TeleOpConfig.DRIVE_CURVE.apply(y, TeleOpConfig.BEZIER_P1, TeleOpConfig.BEZIER_P2, TeleOpConfig.EXP_A);
-        x = TeleOpConfig.DRIVE_CURVE.apply(x, TeleOpConfig.BEZIER_P1, TeleOpConfig.BEZIER_P2, TeleOpConfig.EXP_A);
-        rx = TeleOpConfig.DRIVE_CURVE.apply(rx, TeleOpConfig.BEZIER_P1, TeleOpConfig.BEZIER_P2, TeleOpConfig.EXP_A);
-        */
-
-        if (gamepad1.right_stick_button) rx *= TeleOpConfig.AIM_TURN_SCALE;
-        if (gamepad1.left_stick_button) {
-            y *= TeleOpConfig.AIM_TURN_SCALE + 0.1;
-            x *= TeleOpConfig.AIM_TURN_SCALE + 0.1;
-        }
-
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1.0);
         leftBack.setPower((y + x + rx) / denominator);
         leftFront.setPower((y - x + rx) / denominator);
