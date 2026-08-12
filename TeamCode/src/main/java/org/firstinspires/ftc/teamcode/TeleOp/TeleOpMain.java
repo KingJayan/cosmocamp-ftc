@@ -5,11 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Config.TeleOpConfig;
-import org.firstinspires.ftc.teamcode.helpers.Curve;
 
-@TeleOp(name="main tele", group ="Main")
+@TeleOp(name = "main tele", group = "Main")
 public class TeleOpMain extends OpMode {
     private DcMotorEx leftBack, rightBack, leftFront, rightFront;
+    private DcMotorEx intake;
+
+    private int intakeState = 0;
+    private boolean prevIn = false;
+    private boolean prevOut = false;
 
     @Override
     public void init() {
@@ -17,34 +21,51 @@ public class TeleOpMain extends OpMode {
         rightBack = hardwareMap.get(DcMotorEx.class, "backRight");
         leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
         rightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
 
-        leftBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        DcMotorEx[] motors = {leftBack, rightBack, leftFront, rightFront, intake};
 
-        leftBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        rightBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        leftFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        rightFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        for (DcMotorEx motor : motors) {
+            motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+            motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        }
 
         leftBack.setDirection(DcMotorEx.Direction.REVERSE);
         leftFront.setDirection(DcMotorEx.Direction.FORWARD);
         rightBack.setDirection(DcMotorEx.Direction.FORWARD);
         rightFront.setDirection(DcMotorEx.Direction.REVERSE);
+        intake.setDirection(DcMotorEx.Direction.FORWARD);
     }
 
     @Override
     public void loop() {
-        Drive();
+        drive();
+        intake();
     }
 
-    private void Drive() {
+    private void intake() {
+        boolean in = gamepad1.right_bumper;
+        boolean out = gamepad1.right_trigger > 0.3;
+
+        if (in && !prevIn)
+            intakeState = intakeState == 1 ? 0 : 1;
+
+        if (out && !prevOut)
+            intakeState = intakeState == -1 ? 0 : -1;
+
+        prevIn = in;
+        prevOut = out;
+
+        intake.setPower(intakeState);
+    }
+
+    private void drive() {
         double y = -deadband(gamepad1.left_stick_y);
         double x = deadband(-gamepad1.left_stick_x) * 1.1;
         double rx = deadband(-gamepad1.right_stick_x);
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1.0);
+
         leftFront.setPower((y + x + rx) / denominator);
         leftBack.setPower((y - x + rx) / denominator);
         rightFront.setPower((y - x - rx) / denominator);
