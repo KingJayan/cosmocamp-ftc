@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import static org.firstinspires.ftc.teamcode.Config.TeleOpConfig.kD;
+import static org.firstinspires.ftc.teamcode.Config.TeleOpConfig.kF;
+import static org.firstinspires.ftc.teamcode.Config.TeleOpConfig.kI;
+import static org.firstinspires.ftc.teamcode.Config.TeleOpConfig.kP;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -9,7 +14,8 @@ import org.firstinspires.ftc.teamcode.Config.TeleOpConfig;
 @TeleOp(name = "main tele", group = "Main")
 public class TeleOpMain extends OpMode {
     private DcMotorEx leftBack, rightBack, leftFront, rightFront;
-    private DcMotorEx intake;
+    private DcMotorEx intake, transfer;
+    private DcMotorEx shooter;
 
     private int intakeState = 0;
     private boolean prevIn = false;
@@ -22,25 +28,34 @@ public class TeleOpMain extends OpMode {
         leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
         rightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
+        transfer = hardwareMap.get(DcMotorEx.class, "transfer");
+        shooter = hardwareMap.get(DcMotorEx.class, "shooter");
 
-        DcMotorEx[] motors = {leftBack, rightBack, leftFront, rightFront, intake};
+        DcMotorEx[] motors = {leftBack, rightBack, leftFront, rightFront, intake, transfer};
 
         for (DcMotorEx motor : motors) {
             motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
             motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         }
+        shooter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooter.setVelocityPIDFCoefficients(kI, kP, kD, kF);
 
         leftBack.setDirection(DcMotorEx.Direction.REVERSE);
         leftFront.setDirection(DcMotorEx.Direction.FORWARD);
         rightBack.setDirection(DcMotorEx.Direction.FORWARD);
         rightFront.setDirection(DcMotorEx.Direction.REVERSE);
         intake.setDirection(DcMotorEx.Direction.FORWARD);
+        transfer.setDirection(DcMotorEx.Direction.FORWARD);
+        shooter.setDirection(DcMotorEx.Direction.FORWARD);
     }
 
     @Override
     public void loop() {
         drive();
         intake();
+        shooter();
+        transfer();
     }
 
     private void intake() {
@@ -58,6 +73,18 @@ public class TeleOpMain extends OpMode {
 
         intake.setPower(intakeState);
     }
+
+    private void shooter() {
+        shooter.setVelocityPIDFCoefficients(kI, kP, kD, kF);
+        if (gamepad1.right_trigger > 0.3) {
+            shooter.setVelocity(TeleOpConfig.FAST);
+        }
+        if (gamepad1.a) {
+            shooter.setVelocity(TeleOpConfig.SLOW);
+        }
+    }
+
+    private void transfer() { transfer.setPower(gamepad1.right_bumper ? 1 : -1); }
 
     private void drive() {
         double y = -deadband(gamepad1.left_stick_y);

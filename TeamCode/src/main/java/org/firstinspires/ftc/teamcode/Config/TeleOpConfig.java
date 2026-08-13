@@ -12,4 +12,11 @@ public class TeleOpConfig {
     public static double BEZIER_P1 = 0.5;
     public static double BEZIER_P2 = 0.5;
     public static double EXP_A = 4.0;
+
+    public static double kP = 0;
+    public static double kI = 0;
+    public static double kD = 0;
+    public static double kF = 0;
+    public static double FAST = 3000;
+    public static double SLOW = 1100;
 }
