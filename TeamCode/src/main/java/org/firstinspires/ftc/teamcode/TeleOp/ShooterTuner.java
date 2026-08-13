@@ -51,14 +51,14 @@ public class ShooterTuner extends OpMode {
 
     private void report() {
         double current = shooter.getVelocity();
-        dash.addData("target velocity", targetVelocity);
-        dash.addData("current velocity", current);
-        dash.addData("error", targetVelocity - current);
-        dash.addData("motor power", shooter.getPower());
-        dash.addData("kP", kP);
-        dash.addData("kI", kI);
-        dash.addData("kD", kD);
-        dash.addData("kF", kF);
+        dash.addData("targ: ", targetVelocity);
+        dash.addData("curr: ", current);
+        dash.addData("err: ", targetVelocity - current);
+        dash.addData("", "");
+        dash.addData("kP: ", kP);
+        dash.addData("kI: ", kI);
+        dash.addData("kD: ", kD);
+        dash.addData("kF: ", kF);
         dash.update();
     }
 }
