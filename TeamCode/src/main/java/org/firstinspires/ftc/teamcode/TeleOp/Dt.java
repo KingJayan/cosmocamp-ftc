@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import static org.firstinspires.ftc.teamcode.Config.TeleOpConfig.kD;
-import static org.firstinspires.ftc.teamcode.Config.TeleOpConfig.kF;
-import static org.firstinspires.ftc.teamcode.Config.TeleOpConfig.kI;
-import static org.firstinspires.ftc.teamcode.Config.TeleOpConfig.kP;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

@@ -5,11 +5,14 @@ import static org.firstinspires.ftc.teamcode.Config.TeleOpConfig.kF;
 import static org.firstinspires.ftc.teamcode.Config.TeleOpConfig.kI;
 import static org.firstinspires.ftc.teamcode.Config.TeleOpConfig.kP;
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Config.TeleOpConfig;
+
+import java.util.List;
 
 @TeleOp(name = "main tele", group = "Main")
 public class TeleOpMain extends OpMode {
@@ -21,6 +24,11 @@ public class TeleOpMain extends OpMode {
     private boolean prevIn = false;
     private boolean prevOut = false;
 
+    private double lastP, lastI, lastD, lastF;
+
+    private List<LynxModule> allHubs;
+
+
     @Override
     public void init() {
         leftBack = hardwareMap.get(DcMotorEx.class, "backLeft");
@@ -31,6 +39,11 @@ public class TeleOpMain extends OpMode {
         transfer = hardwareMap.get(DcMotorEx.class, "transfer");
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
 
+        allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule module : allHubs) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+
         DcMotorEx[] motors = {leftBack, rightBack, leftFront, rightFront, intake, transfer};
 
         for (DcMotorEx motor : motors) {
@@ -39,7 +52,7 @@ public class TeleOpMain extends OpMode {
         }
         shooter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        shooter.setVelocityPIDFCoefficients(kI, kP, kD, kF);
+        shooter.setVelocityPIDFCoefficients(kP, kI, kD, kF);
 
         leftBack.setDirection(DcMotorEx.Direction.REVERSE);
         leftFront.setDirection(DcMotorEx.Direction.FORWARD);
@@ -52,6 +65,9 @@ public class TeleOpMain extends OpMode {
 
     @Override
     public void loop() {
+        for (LynxModule module : allHubs) {
+            module.clearBulkCache();
+        }
         drive();
         intake();
         shooter();
@@ -59,8 +75,8 @@ public class TeleOpMain extends OpMode {
     }
 
     private void intake() {
-        boolean in = gamepad1.right_bumper;
-        boolean out = gamepad1.right_trigger > 0.3;
+        boolean in = gamepad1.left_bumper;
+        boolean out = gamepad1.left_trigger > 0.3;
 
         if (in && !prevIn)
             intakeState = intakeState == 1 ? 0 : 1;
@@ -75,13 +91,13 @@ public class TeleOpMain extends OpMode {
     }
 
     private void shooter() {
-        shooter.setVelocityPIDFCoefficients(kI, kP, kD, kF);
-        if (gamepad1.right_trigger > 0.3) {
-            shooter.setVelocity(TeleOpConfig.FAST);
+        if (kP != lastP || kI != lastI || kD != lastD || kF != lastF) {
+            shooter.setVelocityPIDFCoefficients(kP, kI, kD, kF);
+            lastP = kP; lastI = kI; lastD = kD; lastF = kF;
         }
-        if (gamepad1.a) {
-            shooter.setVelocity(TeleOpConfig.SLOW);
-        }
+
+        double targetVelocity = (gamepad1.right_trigger > 0.3) ? TeleOpConfig.FAST : (gamepad1.a ? TeleOpConfig.SLOW : 0);
+        shooter.setVelocity(targetVelocity);
     }
 
     private void transfer() { transfer.setPower(gamepad1.right_bumper ? 1 : -1); }
