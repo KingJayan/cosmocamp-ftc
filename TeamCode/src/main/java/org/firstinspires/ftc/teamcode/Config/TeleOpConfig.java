@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Config;
 
 import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.teamcode.helpers.Curve;
+import org.firstinspires.ftc.teamcode.helpers.CurveParams;
 
 @Config
 public class TeleOpConfig {
@@ -9,9 +10,7 @@ public class TeleOpConfig {
     public static double STICK_DB = 0.05;
     public static Curve DRIVE_CURVE = Curve.SIGMOID; //linear, cubic_bezier, smoothstep, exponential, quintic, sigmoid (ALL CAPS)
     //preset specific
-    public static double BEZIER_P1 = 0.5;
-    public static double BEZIER_P2 = 0.5;
-    public static double EXP_A = 4.0;
+    public static CurveParams CURVE_PARAMS = new CurveParams();
 
     public static double kP = 10;
     public static double kI = 0;

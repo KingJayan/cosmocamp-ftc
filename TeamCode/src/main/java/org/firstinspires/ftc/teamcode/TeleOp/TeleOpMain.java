@@ -108,7 +108,7 @@ public class TeleOpMain extends OpMode {
     }
 
     private double curve(double input) {
-        return TeleOpConfig.DRIVE_CURVE.apply(input, TeleOpConfig.BEZIER_P1, TeleOpConfig.BEZIER_P2, TeleOpConfig.EXP_A);
+        return TeleOpConfig.DRIVE_CURVE.apply(input, TeleOpConfig.CURVE_PARAMS);
     }
 
     private double deadband(double input) {
