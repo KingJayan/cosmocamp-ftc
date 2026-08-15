@@ -22,8 +22,7 @@ import java.util.List;
 public class ShooterTuner extends OpMode {
     private DcMotorEx shooter;
     private Telemetry dash;
-    private double targetVelocity = 0;
-    private double lastP, lastI, lastD, lastF;
+    private double lastP, lastI, lastD, lastF, targetVelocity;
 
     private List<LynxModule> allHubs;
 
@@ -40,7 +39,7 @@ public class ShooterTuner extends OpMode {
         shooter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         shooter.setVelocityPIDFCoefficients(kP, kI, kD, kF);
-        shooter.setDirection(DcMotorEx.Direction.FORWARD);
+        shooter.setDirection(DcMotorEx.Direction.REVERSE);
 
         dash = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }

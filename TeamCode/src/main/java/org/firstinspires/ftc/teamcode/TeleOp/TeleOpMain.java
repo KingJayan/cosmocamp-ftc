@@ -58,9 +58,9 @@ public class TeleOpMain extends OpMode {
         leftFront.setDirection(DcMotorEx.Direction.FORWARD);
         rightBack.setDirection(DcMotorEx.Direction.FORWARD);
         rightFront.setDirection(DcMotorEx.Direction.REVERSE);
-        intake.setDirection(DcMotorEx.Direction.FORWARD);
+        intake.setDirection(DcMotorEx.Direction.REVERSE);
         transfer.setDirection(DcMotorEx.Direction.FORWARD);
-        shooter.setDirection(DcMotorEx.Direction.FORWARD);
+        shooter.setDirection(DcMotorEx.Direction.REVERSE);
     }
 
     @Override
@@ -104,8 +104,8 @@ public class TeleOpMain extends OpMode {
 
     private void drive() {
         double y = -deadband(gamepad1.left_stick_y);
-        double x = deadband(-gamepad1.left_stick_x) * 1.1;
-        double rx = deadband(-gamepad1.right_stick_x);
+        double x = -deadband(-gamepad1.left_stick_x) * 1.1;
+        double rx = -deadband(-gamepad1.right_stick_x);
 
         boolean aim = gamepad1.left_stick_button;
 
